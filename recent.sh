@@ -8,11 +8,16 @@ set -e  # exit on error
 set -o pipefail  # exit when a process in the pipe failsi
 set -o noclobber  # prevent overwritting redirection
 
+function usage () {
+    echo 'Print recent history'
+    echo '    -n number of entries to print'
+}
+
 N=20
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -n) N="$2"; shift ;;
-        *) echo "Unknown parameter passed: $1"; exit 1 ;;
+        *) usage; exit 1 ;;
     esac
     shift
 done
