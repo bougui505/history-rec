@@ -1,0 +1,5 @@
+%rec: history
+%mandatory: command return_val pwd
+%type: date date
+%type: id int
+%auto: id
