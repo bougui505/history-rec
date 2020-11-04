@@ -5,7 +5,6 @@
 # https://research.pasteur.fr/en/member/guillaume-bouvier/
 # 2020-11-04 00:08:55 (UTC+0100)
 set -e  # exit on error
-set -o pipefail  # exit when a process in the pipe failsi
 set -o noclobber  # prevent overwritting redirection
 
 function usage () {
