@@ -28,6 +28,7 @@ if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
     # Store data
     recins -t history \
            -f command -v $COMMANDFMT \
+           -f command_raw -v $_COMMAND_ \
            -f return_val -v $_RETURN_VAL_ \
            -f pwd -v $_PWD_ \
            -f date -v $_DATE_ \
