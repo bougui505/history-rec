@@ -33,10 +33,18 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 ROWS="pwd,id,date,return_val,command_raw"
+function quicksearch () {
+    # Search for a word in the database
+    recsel -q "$SEARCH" -R $ROWS | sed '/^[[:space:]]*$/d'
+}
+function cwd () {
+    # Filter to get entries of the Current Working Directory only
+    recsel -e "pwd = '$PWD'"
+}
 if [ $CWD -eq 1 ]; then
-    OUT=$(recsel -e "pwd = '$PWD'" $HOME/.history.rec | recsel -q "$SEARCH" -R $ROWS | sed '/^[[:space:]]*$/d')
+    OUT=$(cat $HOME/.history.rec | cwd | quicksearch)
 else
-    OUT=$(recsel -q "$SEARCH" -R $ROWS $HOME/.history.rec | sed '/^[[:space:]]*$/d')
+    OUT=$(cat $HOME/.history.rec | quicksearch)
 fi
 if [ -t 1 ]; then  # Script stdout is not piped -> colored output
     echo $OUT \
