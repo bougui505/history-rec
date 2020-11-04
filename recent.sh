@@ -29,8 +29,12 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 
-OUT=$(recsel -q "$SEARCH" -R date,return_val,command,pwd $HOME/.history.rec | sed '/^[[:space:]]*$/d')
+OUT=$(recsel -q "$SEARCH" -R pwd,date,return_val,command $HOME/.history.rec | sed '/^[[:space:]]*$/d')
 echo $OUT \
     | tail -n$N \
     | awk -v red=$RED -v green=$GREEN -v nocolor=$NOCOLOR -v pwd=$PWD\
-        '{if ($2>0){print red $1,$2,$3 nocolor} else if ($4==pwd){print green $1,$2,$3 nocolor} else{print $1,$2,$3}}'
+    '{
+      if ($3>0){for(i=2;i<=NF;++i){printf(red $i nocolor" ")}printf("\n")}
+      else if ($1==pwd){for(i=2;i<=NF;++i){printf(green $i nocolor" ")}printf("\n")} 
+      else{for(i=2;i<=NF;++i){printf($i" ")}printf("\n")}
+      }'
