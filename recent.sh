@@ -8,11 +8,20 @@ set -e  # exit on error
 set -o noclobber  # prevent overwritting redirection
 
 function usage () {
-    echo 'Print recent history'
-    echo '    -h, --help print this help message and exit'
-    echo '    -n, --number=NUM number of entries to print'
-    echo '    -s, --search=STR string to search for command field'
-    echo '    -w, --cwd=STR print only entries for the Current Working Directory'
+    cat << EOF
+Print recent history
+    -h, --help print this help message and exit
+    -n, --number=NUM number of entries to print
+    -s, --search=STR string to search for command field
+    -w, --cwd=STR print only entries for the Current Working Directory
+    -e, --expression=RECORD_EXPR filter using the given expression
+        (See: https://www.gnu.org/software/recutils/manual/SEX-Operators.html#SEX-Operators).
+        Current filters:
+        - Before a given date:
+            - "date<<'2020-11-04T22:53'"
+        - After a given date:
+            - "date>>'2020-11-04T22:53'"
+EOF
 }
 
 RED="\033[31m"
@@ -42,9 +51,16 @@ function cwd () {
     # Filter to get entries of the Current Working Directory only
     recsel -e "pwd = '$PWD'"
 }
+function filter () {
+    # Filter using $EXPRESSION
+    recsel -e "$EXPRESSION"
+}
 OUT=$(cat $HOME/.history.rec)
 if [ $CWD -eq 1 ]; then
     OUT=$(echo $OUT | cwd)
+fi
+if [ ! -z $EXPRESSION ]; then
+    OUT=$(echo $OUT | filter)
 fi
 OUT=$(echo $OUT | quicksearch)
 if [ -t 1 ]; then  # Script stdout is not piped -> colored output
