@@ -22,12 +22,14 @@ _DATE_=$4
 
 if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
     # Delete duplicates
+    COMMANDFMT=$(echo $_COMMAND_ | sed "s/'/\\\'/g")
+    echo $COMMANDFMT
     recdel -t history \
-           -e "command = '$_COMMAND_' && pwd = '$PWD'" \
+           -e "command = '$COMMANDFMT' && pwd = '$PWD'" \
             $HISTORYDB
     # Store data
     recins -t history \
-           -f command -v $_COMMAND_ \
+           -f command -v $COMMANDFMT \
            -f return_val -v $_RETURN_VAL_ \
            -f pwd -v $_PWD_ \
            -f date -v $_DATE_ \

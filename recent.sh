@@ -19,17 +19,23 @@ GREEN="\033[32m"
 NOCOLOR="\033[0m"
 
 N=20
+CWD=0
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -n|--number) N="$2"; shift ;;
         -s|--search) SEARCH="$2" ; shift ;;
+        -w|--cwd) CWD=1 ;;
         *) usage; exit 1 ;;
     esac
     shift
 done
 
-
-OUT=$(recsel -q "$SEARCH" -R pwd,date,return_val,command $HOME/.history.rec | sed '/^[[:space:]]*$/d')
+ROWS="pwd,date,return_val,command"
+if [ $CWD -eq 1 ]; then
+    OUT=$(recsel -R $ROWS -q "$PWD" $HOME/.history.rec | sed '/^[[:space:]]*$/d')
+else
+    OUT=$(recsel -q "$SEARCH" -R $ROWS $HOME/.history.rec | sed '/^[[:space:]]*$/d')
+fi
 echo $OUT \
     | tail -n$N \
     | awk -v red=$RED -v green=$GREEN -v nocolor=$NOCOLOR -v pwd=$PWD\
