@@ -15,7 +15,7 @@ For zsh add this to your precmd:
 ```bash
 function precmd() {
     exit_status=0
-    log_history ""  /home/bougui/source/history-rec 2020-11-04T11:48:35+01:00
+    log_history ""  /home/bougui/source/history-rec 2020-11-04T23:08:44+01:00
 }
 ```
 
@@ -34,4 +34,11 @@ Print recent history
     -n, --number=NUM number of entries to print
     -s, --search=STR string to search for command field
     -w, --cwd=STR print only entries for the Current Working Directory
+    -e, --expression=RECORD_EXPR filter using the given expression
+        (See: https://www.gnu.org/software/recutils/manual/SEX-Operators.html#SEX-Operators).
+        Current filters:
+        - Before a given date:
+            - "date<<'2020-11-04T22:53'"
+        - After a given date:
+            - "date>>'2020-11-04T22:53'"
 ```
