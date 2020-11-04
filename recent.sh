@@ -12,6 +12,7 @@ function usage () {
     echo 'Print recent history'
     echo '    -n, --number=NUM number of entries to print'
     echo '    -s, --search=STR string to search for command field'
+    echo '    -w, --cwd=STR print only entries for the Current Working Directory'
 }
 
 RED="\033[31m"
@@ -32,7 +33,7 @@ done
 
 ROWS="pwd,date,return_val,command"
 if [ $CWD -eq 1 ]; then
-    OUT=$(recsel -R $ROWS -q "$PWD" $HOME/.history.rec | sed '/^[[:space:]]*$/d')
+    OUT=$(recsel -e "pwd = '$PWD'" $HOME/.history.rec | recsel -q "$SEARCH" -R $ROWS | sed '/^[[:space:]]*$/d')
 else
     OUT=$(recsel -q "$SEARCH" -R $ROWS $HOME/.history.rec | sed '/^[[:space:]]*$/d')
 fi
