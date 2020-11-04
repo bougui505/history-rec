@@ -10,6 +10,7 @@ set -o noclobber  # prevent overwritting redirection
 
 function usage () {
     echo 'Print recent history'
+    echo '    -h, --help print this help message and exit'
     echo '    -n, --number=NUM number of entries to print'
     echo '    -s, --search=STR string to search for command field'
     echo '    -w, --cwd=STR print only entries for the Current Working Directory'
@@ -26,6 +27,7 @@ while [[ "$#" -gt 0 ]]; do
         -n|--number) N="$2"; shift ;;
         -s|--search) SEARCH="$2" ; shift ;;
         -w|--cwd) CWD=1 ;;
+        -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
     shift
