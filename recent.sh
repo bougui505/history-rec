@@ -14,6 +14,10 @@ function usage () {
     echo '    -s, --search=STR string to search for command field'
 }
 
+RED="\033[31m"
+GREEN="\033[32m"
+NOCOLOR="\033[0m"
+
 N=20
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -25,5 +29,8 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 
-OUT=$(recsel -q "$SEARCH" -R date,return_val,command $HOME/.history.rec | sed '/^[[:space:]]*$/d')
-echo $OUT | tail -n$N | awk '{if ($2>0){print "\033[31m"$0"\033[0m"} else{print $0}}'
+OUT=$(recsel -q "$SEARCH" -R date,return_val,command,pwd $HOME/.history.rec | sed '/^[[:space:]]*$/d')
+echo $OUT \
+    | tail -n$N \
+    | awk -v red=$RED -v green=$GREEN -v nocolor=$NOCOLOR -v pwd=$PWD\
+        '{if ($2>0){print red $1,$2,$3 nocolor} else if ($4==pwd){print green $1,$2,$3 nocolor} else{print $1,$2,$3}}'
