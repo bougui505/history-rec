@@ -26,6 +26,7 @@ while [[ "$#" -gt 0 ]]; do
         -n|--number) N="$2"; shift ;;
         -s|--search) SEARCH="$2" ; shift ;;
         -w|--cwd) CWD=1 ;;
+        -e|--expression) EXPRESSION="$2"; shift ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
@@ -41,11 +42,11 @@ function cwd () {
     # Filter to get entries of the Current Working Directory only
     recsel -e "pwd = '$PWD'"
 }
+OUT=$(cat $HOME/.history.rec)
 if [ $CWD -eq 1 ]; then
-    OUT=$(cat $HOME/.history.rec | cwd | quicksearch)
-else
-    OUT=$(cat $HOME/.history.rec | quicksearch)
+    OUT=$(echo $OUT | cwd)
 fi
+OUT=$(echo $OUT | quicksearch)
 if [ -t 1 ]; then  # Script stdout is not piped -> colored output
     echo $OUT \
         | tail -n$N \
