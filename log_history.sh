@@ -13,15 +13,23 @@ if [ ! -f $HOME/.history.rec ]; then
     cp $DIRSCRIPT/history.rec.template $HOME/.history.rec
 fi
 
+HISTORYDB=$HOME/.history.rec
+
 _COMMAND_=$1
 _RETURN_VAL_=$2
 _PWD_=$3
 _DATE_=$4
 
 if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
+    # Delete duplicates
+    recdel -t history \
+           -e "command = '$_COMMAND_' && pwd = '$PWD'" \
+            $HISTORYDB
+    # Store data
     recins -t history \
            -f command -v $_COMMAND_ \
            -f return_val -v $_RETURN_VAL_ \
-           -f pwd -v $_PWD_ $HOME/.history.rec \
-           -f date -v $_DATE_
+           -f pwd -v $_PWD_ \
+           -f date -v $_DATE_ \
+	    $HISTORYDB
 fi
