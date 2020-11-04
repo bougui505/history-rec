@@ -21,7 +21,7 @@ cat << EOF
 (See: https://www.gnu.org/software/recutils/)
 
 ## Install:
-Link \`log_history.sh\` and \`recent.sh\` somewhere in your \`$PATH\`:
+Link \`log_history.sh\` and \`recent.sh\` somewhere in your \`\$PATH\`:
 
 \`\`\`bash
 cd ~/bin

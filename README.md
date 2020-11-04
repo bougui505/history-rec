@@ -2,7 +2,7 @@
 (See: https://www.gnu.org/software/recutils/)
 
 ## Install:
-Link `log_history.sh` and `recent.sh` somewhere in your `/home/bougui/.local/bin:/home/bougui/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/snap/bin:/home/bougui/bin:/home/bougui/.gem/ruby/2.1.0/bin:/home/bougui/source/UCSF_DOCK/dock6/bin:/home/bougui/source/node.js/node-v10.15.3-linux-x64/bin:/snap/bin:/home/bougui/.local/bin:/home/bougui/.fzf/bin:/home/bougui/go/bin`:
+Link `log_history.sh` and `recent.sh` somewhere in your `$PATH`:
 
 ```bash
 cd ~/bin
@@ -15,7 +15,7 @@ For zsh add this to your precmd:
 ```bash
 function precmd() {
     exit_status=0
-    log_history ""  /home/bougui/source/history-rec 2020-11-04T11:47:11+01:00
+    log_history ""  /home/bougui/source/history-rec 2020-11-04T11:48:35+01:00
 }
 ```
 
