@@ -38,11 +38,17 @@ if [ $CWD -eq 1 ]; then
 else
     OUT=$(recsel -q "$SEARCH" -R $ROWS $HOME/.history.rec | sed '/^[[:space:]]*$/d')
 fi
-echo $OUT \
-    | tail -n$N \
-    | awk -v red=$RED -v green=$GREEN -v nocolor=$NOCOLOR -v pwd=$PWD\
-    '{
-      if ($4>0){for(i=2;i<=NF;++i){printf(red $i nocolor" ")}printf("\n")}
-      else if ($1==pwd){for(i=2;i<=NF;++i){printf(green $i nocolor" ")}printf("\n")} 
-      else{for(i=2;i<=NF;++i){printf($i" ")}printf("\n")}
-      }'
+if [ -t 1 ]; then  # Script stdout is not piped -> colored output
+    echo $OUT \
+        | tail -n$N \
+        | awk -v red=$RED -v green=$GREEN -v nocolor=$NOCOLOR -v pwd=$PWD\
+        '{
+          if ($4>0){for(i=2;i<=NF;++i){printf(red $i nocolor" ")}printf("\n")}
+          else if ($1==pwd){for(i=2;i<=NF;++i){printf(green $i nocolor" ")}printf("\n")} 
+          else{for(i=2;i<=NF;++i){printf($i" ")}printf("\n")}
+          }'
+else  # Script stdout is piped -> no colors
+    echo $OUT \
+        | tail -n$N \
+        | awk '{for(i=2;i<=NF;++i){printf($i" ")}printf("\n")}'
+fi
