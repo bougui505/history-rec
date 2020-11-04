@@ -21,8 +21,8 @@ _PWD_=$3
 _DATE_=$4
 
 if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
-    # Delete duplicates
     COMMANDFMT=$(echo $_COMMAND_ | sed "s/'/\\\'/g")
+    # Delete duplicates
     recdel -t history \
            -e "command = '$COMMANDFMT' && pwd = '$PWD'" \
             $HISTORYDB
