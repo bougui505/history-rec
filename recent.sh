@@ -32,7 +32,7 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-ROWS="pwd,id,date,return_val,command"
+ROWS="pwd,id,date,return_val,command_raw"
 if [ $CWD -eq 1 ]; then
     OUT=$(recsel -e "pwd = '$PWD'" $HOME/.history.rec | recsel -q "$SEARCH" -R $ROWS | sed '/^[[:space:]]*$/d')
 else
