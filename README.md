@@ -15,7 +15,7 @@ For zsh add this to your precmd:
 ```bash
 function precmd() {
     exit_status=0
-    log_history ""  /home/bougui/source/history-rec 2020-11-04T23:08:44+01:00
+    log_history ""  /home/bougui/source/history-rec 2020-11-05T14:39:57+01:00
 }
 ```
 
@@ -41,4 +41,5 @@ Print recent history
             - "date<<'2020-11-04T22:53'"
         - After a given date:
             - "date>>'2020-11-04T22:53'"
+    -y, --yank=INT display and copy to clipboard the command entry with the given ID. (requires xclip)
 ```
