@@ -43,6 +43,8 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 ROWS="pwd,id,date,return_val,command_raw"
+
+
 function quicksearch () {
     # Search for a word in the database
     recsel -q "$SEARCH" -R $ROWS | sed '/^[[:space:]]*$/d'
@@ -55,6 +57,8 @@ function filter () {
     # Filter using $EXPRESSION
     recsel -e "$EXPRESSION"
 }
+
+
 OUT=$(cat $HOME/.history.rec)
 if [ $CWD -eq 1 ]; then
     OUT=$(echo $OUT | cwd)
@@ -63,6 +67,8 @@ if [ ! -z $EXPRESSION ]; then
     OUT=$(echo $OUT | filter)
 fi
 OUT=$(echo $OUT | quicksearch)
+
+
 if [ -t 1 ]; then  # Script stdout is not piped -> colored output
     echo $OUT \
         | tail -n$N \
