@@ -21,9 +21,10 @@ _DATE_=$4
 
 if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
     COMMANDFMT=$(echo $_COMMAND_ | sed "s/'/\\\'/g")
+    SEX="command = '$COMMANDFMT' && pwd = '$PWD'"
     # Delete duplicates
     recdel -t history \
-           -e "command = '$COMMANDFMT' && pwd = '$PWD'" \
+           -e $SEX \
             $HISTORYDB
     # Store data
     recins -t history \
