@@ -25,6 +25,7 @@ Print recent history
     -y, --yank=INT display and copy to clipboard the command entry with the given ID. (requires xclip)
     -t, --tag=INT tag the given entry given by ID using this symbol: $TAGSYMBOL
     -u, --untag=INT untag the given entry given by ID
+    -p, --pin display only tagged entries
 EOF
 }
 
@@ -43,6 +44,7 @@ while [[ "$#" -gt 0 ]]; do
         -y|--yank) YANK="$2"; shift ;;
         -t|--tag) TAG="$2"; shift ;;
         -u|--untag) UNTAG="$2"; shift ;;
+        -p|--pin) EXPRESSION="tag='$TAGSYMBOL'" ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
