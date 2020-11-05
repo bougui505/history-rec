@@ -21,6 +21,7 @@ Print recent history
             - "date<<'2020-11-04T22:53'"
         - After a given date:
             - "date>>'2020-11-04T22:53'"
+    -y, --yank=INT display and copy to clipboard the command entry with the given ID. (requires xclip)
 EOF
 }
 
@@ -36,6 +37,7 @@ while [[ "$#" -gt 0 ]]; do
         -s|--search) SEARCH="$2" ; shift ;;
         -w|--cwd) CWD=1 ;;
         -e|--expression) EXPRESSION="$2"; shift ;;
+        -y|--yank) YANK="$2"; shift ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
@@ -57,6 +59,18 @@ function filter () {
     # Filter using $EXPRESSION
     recsel -e "$EXPRESSION"
 }
+function command_raw () {
+    # Get the command raw of the id $YANK
+    cat $HOME/.history.rec | recsel -e "id=$YANK" | recsel -R 'command_raw'
+}
+
+
+if [ ! -z $YANK ]; then
+    OUTCMD=$(command_raw)
+    echo $OUTCMD
+    echo $OUTCMD | tr -d '\n' | xclip
+    exit 0
+fi
 
 
 OUT=$(cat $HOME/.history.rec)
