@@ -22,6 +22,11 @@ _DATE_=$4
 if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
     COMMANDFMT=$(echo $_COMMAND_ | sed "s/'/\\\'/g")
     SEX="command = '$COMMANDFMT' && pwd = '$PWD'"
+    # Check if command is tagged
+    TAG=$(recsel -t history -e $SEX $HISTORYDB | recsel -R "tag")
+    if [ -z $TAG ]; then
+        TAG=" "
+    fi
     # Delete duplicates
     recdel -t history \
            -e $SEX \
@@ -33,6 +38,7 @@ if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
            -f return_val -v $_RETURN_VAL_ \
            -f pwd -v $_PWD_ \
            -f date -v $_DATE_ \
+           -f tag -v $TAG \
 	    $HISTORYDB
     # Clean carriage returns special characters
     sed -i 's/\\n/; /g' $HISTORYDB

@@ -7,6 +7,7 @@
 set -e  # exit on error
 set -o noclobber  # prevent overwritting redirection
 
+TAGSYMBOL="⬤"
 function usage () {
     cat << EOF
 Print recent history
@@ -22,6 +23,8 @@ Print recent history
         - After a given date:
             - "date>>'2020-11-04T22:53'"
     -y, --yank=INT display and copy to clipboard the command entry with the given ID. (requires xclip)
+    -t, --tag=INT tag the given entry given by ID using this symbol: $TAGSYMBOL
+    -u, --untag=INT untag the given entry given by ID
 EOF
 }
 
@@ -38,13 +41,15 @@ while [[ "$#" -gt 0 ]]; do
         -w|--cwd) CWD=1 ;;
         -e|--expression) EXPRESSION="$2"; shift ;;
         -y|--yank) YANK="$2"; shift ;;
+        -t|--tag) TAG="$2"; shift ;;
+        -u|--untag) UNTAG="$2"; shift ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
     shift
 done
 
-ROWS="pwd,id,date,return_val,command_raw"
+ROWS="pwd,id,date,return_val,command_raw,tag"
 
 
 function quicksearch () {
@@ -69,6 +74,17 @@ if [ ! -z $YANK ]; then
     OUTCMD=$(command_raw)
     echo $OUTCMD
     echo $OUTCMD | tr -d '\n' | xclip
+    exit 0
+fi
+
+
+if [ ! -z $TAG ]; then
+    recset -t history -e "id=$TAG" -f tag -s $TAGSYMBOL $HOME/.history.rec
+    exit 0
+fi
+
+if [ ! -z $UNTAG ]; then
+    recset -t history -e "id=$UNTAG" -f tag -s " " $HOME/.history.rec
     exit 0
 fi
 
