@@ -33,4 +33,6 @@ if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
            -f pwd -v $_PWD_ \
            -f date -v $_DATE_ \
 	    $HISTORYDB
+    # Clean carriage returns special characters
+    sed -i 's/\\n/; /g' $HISTORYDB
 fi
