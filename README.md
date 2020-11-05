@@ -15,7 +15,7 @@ For zsh add this to your precmd:
 ```bash
 function precmd() {
     exit_status=0
-    log_history ""  /home/bougui/source/history-rec 2020-11-05T14:39:57+01:00
+    log_history "$(fc -ln 0 | tail -1)" $exit_status $PWD $(date -Is)
 }
 ```
 

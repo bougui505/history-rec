@@ -34,7 +34,7 @@ For zsh add this to your precmd:
 \`\`\`bash
 function precmd() {
     exit_status=$?
-    log_history "$(fc -ln 0 | tail -1)" $exit_status $PWD $(date -Is)
+    log_history "\$(fc -ln 0 | tail -1)" \$exit_status \$PWD \$(date -Is)
 }
 \`\`\`
 
