@@ -101,20 +101,22 @@ fi
 if [ ! -z $EXPRESSION ]; then
     OUT=$(echo $OUT | filter)
 fi
-OUT=$(echo $OUT | quicksearch | rows)
+OUT=$(echo $OUT | quicksearch)
 
 
+for ROW in $(echo $ROWS | tr ',' '\n'); do
+    ROWVALS=$(echo $OUT | recsel -P $ROW)
+    declare "_${ROW}_=$ROWVALS"
+done
 if [ -t 1 ]; then  # Script stdout is not piped -> colored output
-    echo $OUT \
-        | tail -n$N \
-        | awk -v red=$RED -v green=$GREEN -v nocolor=$NOCOLOR -v pwd=$PWD\
-        '{
-          if ($4>0){for(i=2;i<=NF;++i){printf("%s%s%s ",red, $i, nocolor)}printf("\n")}
-          else if ($1==pwd){for(i=2;i<=NF;++i){printf("%s%s%s ", green, $i, nocolor)}printf("\n")}
-          else{for(i=2;i<=NF;++i){printf("%s ", $i)}printf("\n")}
-          }'
+    paste -d',' <(echo $_pwd_) <(echo $_id_) <(echo $_date_) <(echo $_return_val_) <(echo $_command_raw_) <(echo $_tag_) \
+                | sed '/^,/d' | tail -n$N \
+                | awk -F"," -v red=$RED -v green=$GREEN -v nocolor=$NOCOLOR -v pwd=$PWD\
+                '{
+                    if ($4>0){for(i=2;i<=NF;++i){printf("%s%s%s\t",red, $i, nocolor)}printf("\n")}
+                    else if ($1==pwd){for(i=2;i<=NF;++i){printf("%s%s%s\t", green, $i, nocolor)}printf("\n")}
+                    else{for(i=2;i<=NF;++i){printf("%s\t", $i)}printf("\n")}
+                }'
 else  # Script stdout is piped -> no colors
-    echo $OUT \
-        | tail -n$N \
-        | awk '{for(i=2;i<=NF;++i){printf($i" ")}printf("\n")}'
+    paste <(echo $_id_) <(echo $_date_) <(echo $_return_val_) <(echo $_command_raw_) <(echo $_tag_) | sed '/^\s*$/d' | tail -n$N
 fi
