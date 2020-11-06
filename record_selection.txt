@@ -1,0 +1,1 @@
+^id:.*$\ncommand:.*$\ncommand_raw:.*$\nreturn_val:.*$\npwd:.*$\ndate:.*$\ntag:.*$\nelapsed:.*$
