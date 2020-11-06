@@ -42,7 +42,8 @@ function precmd() {
         elapsed=\$((\$now-\$timer))                                                                 
         unset timer                                            
     fi                                                       
-    log_history "\$(fc -ln 0 | tail -1)" \$exit_status \$PWD \$(date -Is) \$elapsed
+    # Parenthesis required to avoid Done message of background process
+    (log_history "\$(fc -ln 0 | tail -1)" \$exit_status \$PWD \$(date -Is) \$elapsed &)
 }
 \`\`\`
 
