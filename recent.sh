@@ -106,9 +106,9 @@ if [ -t 1 ]; then  # Script stdout is not piped -> colored output
         | tail -n$N \
         | awk -v red=$RED -v green=$GREEN -v nocolor=$NOCOLOR -v pwd=$PWD\
         '{
-          if ($4>0){for(i=2;i<=NF;++i){printf(red $i nocolor" ")}printf("\n")}
-          else if ($1==pwd){for(i=2;i<=NF;++i){printf(green $i nocolor" ")}printf("\n")} 
-          else{for(i=2;i<=NF;++i){printf($i" ")}printf("\n")}
+          if ($4>0){for(i=2;i<=NF;++i){printf("%s%s%s ",red, $i, nocolor)}printf("\n")}
+          else if ($1==pwd){for(i=2;i<=NF;++i){printf("%s%s%s ", green, $i, nocolor)}printf("\n")}
+          else{for(i=2;i<=NF;++i){printf("%s ", $i)}printf("\n")}
           }'
 else  # Script stdout is piped -> no colors
     echo $OUT \
