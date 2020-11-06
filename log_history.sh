@@ -8,6 +8,7 @@ set -e  # exit on error
 set -o noclobber  # prevent overwritting redirection
 
 DIRSCRIPT="$(dirname "$(readlink -f "$0")")"
+TAGSYMBOL="⬤"
 if [ ! -f $HOME/.history.rec ]; then
     cp $DIRSCRIPT/history.rec.template $HOME/.history.rec
 fi
@@ -25,7 +26,7 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
     SEX="command = '$COMMANDFMT' && pwd = '$PWD'"
     # Check if command is tagged
     TAG=$(recsel -t history -e $SEX $HISTORYDB | recsel -R "tag")
-    if [ -z $TAG ]; then
+    if [[ -z $TAG && TAG!=$TAGSYMBOL ]]; then
         TAG=" "
     fi
     # Delete duplicates
