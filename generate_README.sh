@@ -32,9 +32,17 @@ ln -s /path/to/history-rec/recent.sh recent
 For zsh add this to your precmd:
 
 \`\`\`bash
+function preexec() {
+    timer=\$((\$(date +%s%0N)/1000000))
+}
 function precmd() {
-    exit_status=$?
-    log_history "\$(fc -ln 0 | tail -1)" \$exit_status \$PWD \$(date -Is)
+    exit_status=\$?
+    if [ \$timer ]; then                                      
+        now=\$((\$(date +%s%0N)/1000000))                        
+        elapsed=\$((\$now-\$timer))                                                                 
+        unset timer                                            
+    fi                                                       
+    log_history "\$(fc -ln 0 | tail -1)" \$exit_status \$PWD \$(date -Is) \$elapsed
 }
 \`\`\`
 

@@ -18,8 +18,9 @@ _COMMAND_=$1
 _RETURN_VAL_=$2
 _PWD_=$3
 _DATE_=$4
+_ELAPSED_=$5  # elapsed command time in ms
 
-if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
+if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is not empty
     COMMANDFMT=$(echo $_COMMAND_ | sed "s/'/\\\'/g")
     SEX="command = '$COMMANDFMT' && pwd = '$PWD'"
     # Check if command is tagged
@@ -39,6 +40,7 @@ if [ ! -z $_COMMAND_ ]; then  # Check that $_COMMAND_ is not empty
            -f pwd -v $_PWD_ \
            -f date -v $_DATE_ \
            -f tag -v $TAG \
+           -f elapsed -v $_ELAPSED_ \
 	    $HISTORYDB
     # Clean carriage returns special characters
     sed -i 's/\\n/; /g' $HISTORYDB
