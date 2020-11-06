@@ -51,12 +51,15 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-ROWS="pwd,id,date,return_val,command_raw,tag"
+ROWS="pwd,id,date,return_val,command_raw,elapsed,tag"
 
 
 function quicksearch () {
     # Search for a word in the database
-    recsel -q "$SEARCH" -R $ROWS | sed '/^[[:space:]]*$/d'
+    recsel -q "$SEARCH"
+}
+function rows () {
+    recsel -R $ROWS | sed '/^[[:space:]]*$/d'
 }
 function cwd () {
     # Filter to get entries of the Current Working Directory only
@@ -98,7 +101,7 @@ fi
 if [ ! -z $EXPRESSION ]; then
     OUT=$(echo $OUT | filter)
 fi
-OUT=$(echo $OUT | quicksearch)
+OUT=$(echo $OUT | quicksearch | rows)
 
 
 if [ -t 1 ]; then  # Script stdout is not piped -> colored output
