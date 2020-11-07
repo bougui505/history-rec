@@ -1,5 +1,5 @@
 %rec: history
-%mandatory: command return_val pwd
+%mandatory: command command_raw return_val pwd date tag elapsed
 %type: date date
 %type: id int
 %auto: id
