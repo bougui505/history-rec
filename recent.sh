@@ -31,6 +31,7 @@ EOF
 
 RED="\033[31m"
 GREEN="\033[32m"
+CYAN="\033[36m"
 NOCOLOR="\033[0m"
 
 N=20
@@ -108,14 +109,20 @@ for ROW in $(echo $ROWS | tr ',' '\n'); do
     ROWVALS=$(echo $OUT | recsel -P $ROW)
     declare "_${ROW}_=$ROWVALS"
 done
+_elapsed_=$(echo $_elapsed_ | awk -v cyan=$CYAN -v nocolor=$NOCOLOR '{x=$1/1000; s=x%60; x/=60; m=x%60; x/=60; h=x%60;
+                                                                      if (int(h)>0 && int(m)>0){printf(cyan"%02d:%02d:%02d.%03d"nocolor"\n", h, m, s, $1%1000)}
+                                                                      else if (int(m)>0){printf(cyan"    %02d:%02d.%03d"nocolor"\n", m, s, $1%1000)}
+                                                                      else {printf(cyan"       %02d.%03d"nocolor"\n", s, $1%1000)}
+                                                                      }')
 if [ -t 1 ]; then  # Script stdout is not piped -> colored output
-    paste -d',' <(echo $_pwd_) <(echo $_id_) <(echo $_date_) <(echo $_return_val_) <(echo $_command_raw_) <(echo $_tag_) \
+    paste -d',' <(echo $_pwd_) <(echo $_id_) <(echo $_date_) <(echo $_return_val_) \
+                <(echo $_elapsed_) <(echo $_tag_) <(echo $_command_raw_) \
                 | sed '/^,/d' | tail -n$N \
                 | awk -F"," -v red=$RED -v green=$GREEN -v nocolor=$NOCOLOR -v pwd=$PWD\
                 '{
-                    if ($4>0){for(i=2;i<=NF;++i){printf("%s%s%s\t",red, $i, nocolor)}printf("\n")}
-                    else if ($1==pwd){for(i=2;i<=NF;++i){printf("%s%s%s\t", green, $i, nocolor)}printf("\n")}
-                    else{for(i=2;i<=NF;++i){printf("%s\t", $i)}printf("\n")}
+                    if ($4>0){for(i=2;i<=NF;++i){printf("%s%s%s ",red, $i, nocolor)}printf("\n")}
+                    else if ($1==pwd){for(i=2;i<=NF;++i){printf("%s%s%s ", green, $i, nocolor)}printf("\n")}
+                    else{for(i=2;i<=NF;++i){printf("%s ", $i)}printf("\n")}
                 }'
 else  # Script stdout is piped -> no colors
     paste <(echo $_id_) <(echo $_date_) <(echo $_return_val_) <(echo $_command_raw_) <(echo $_tag_) | sed '/^\s*$/d' | tail -n$N
