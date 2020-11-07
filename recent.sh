@@ -116,6 +116,7 @@ function format_out() {
     COLOR2=$2
     COLOR3=$3
     NOCOLOR_=$4
+    echo "id             date        exit code  ${COLOR3}duration${NOCOLOR_} $TAGSYMBOL   command"
     _elapsed_formatted=$(echo $_elapsed_ | awk -v cyan=$COLOR3 -v nocolor=$NOCOLOR_ '{x=$1/1000; s=x%60; x/=60; m=x%60; x/=60; h=x%60;
                                                                           if (int(h)>0 && int(m)>0){printf(cyan"%02d:%02d:%02d.%03d"nocolor"\n", h, m, s, $1%1000)}
                                                                           else if (int(m)>0){printf(cyan"    %02d:%02d.%03d"nocolor"\n", m, s, $1%1000)}
