@@ -26,7 +26,7 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
     SEX="command = '$COMMANDFMT' && pwd = '$PWD'"
     # Check if command is tagged
     TAG=$(recsel -t history -e $SEX $HISTORYDB | recsel -R "tag")
-    if [[ -z $TAG && TAG!=$TAGSYMBOL ]]; then
+    if [[ -z $TAG && TAG != $TAGSYMBOL ]]; then
         TAG=" "
     fi
     # Delete duplicates
