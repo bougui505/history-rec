@@ -54,4 +54,5 @@ Print recent history
     -t, --tag=INT tag the given entry given by ID using this symbol: ⬤
     -u, --untag=INT untag the given entry given by ID
     -p, --pin display only tagged entries
+    -d, --duration=INT display commands that ran for longer than duration given in seconds
 ```
