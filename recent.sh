@@ -26,6 +26,7 @@ Print recent history
     -t, --tag=INT tag the given entry given by ID using this symbol: $TAGSYMBOL
     -u, --untag=INT untag the given entry given by ID
     -p, --pin display only tagged entries
+    -d, --duration=INT display commands that ran for longer than duration given in seconds
 EOF
 }
 
@@ -46,6 +47,7 @@ while [[ "$#" -gt 0 ]]; do
         -t|--tag) TAG="$2"; shift ;;
         -u|--untag) UNTAG="$2"; shift ;;
         -p|--pin) EXPRESSION="tag='$TAGSYMBOL'" ;;
+        -d|--duration) DURATION="$2"; EXPRESSION="elapsed>='$(( $DURATION*1000 ))'"; shift ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
