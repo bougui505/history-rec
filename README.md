@@ -55,4 +55,5 @@ Print recent history
     -u, --untag=INT untag the given entry given by ID
     -p, --pin display only tagged entries
     -d, --duration=INT display commands that ran for longer than duration given in seconds
+    -r, --renumber renumber the ids of the database
 ```
