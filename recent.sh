@@ -27,6 +27,7 @@ Print recent history
     -u, --untag=INT untag the given entry given by ID
     -p, --pin display only tagged entries
     -d, --duration=INT display commands that ran for longer than duration given in seconds
+    -r, --renumber renumber the ids of the database
 EOF
 }
 
@@ -37,6 +38,7 @@ NOCOLOR="\033[0m"
 
 N=20
 CWD=0
+RENUMBER=0
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -n|--number) N="$2"; shift ;;
@@ -48,11 +50,18 @@ while [[ "$#" -gt 0 ]]; do
         -u|--untag) UNTAG="$2"; shift ;;
         -p|--pin) EXPRESSION="tag='$TAGSYMBOL'" ;;
         -d|--duration) DURATION="$2"; EXPRESSION="elapsed>='$(( $DURATION*1000 ))'"; shift ;;
+        -r|--renumber) RENUMBER=1 ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
     shift
 done
+
+if [ $RENUMBER -eq 1 ]; then
+    sed -i '/^id: /d' $HOME/.history.rec \
+        && recfix --auto $HOME/.history.rec
+    exit 0
+fi
 
 ROWS="pwd,id,date,return_val,command_raw,elapsed,tag"
 
