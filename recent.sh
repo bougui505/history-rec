@@ -68,7 +68,7 @@ ROWS="pwd,id,date,return_val,command_raw,elapsed,tag"
 
 function quicksearch () {
     # Search for a word in the database
-    recsel -q "$SEARCH"
+    recsel -e "command_raw~'.*$SEARCH.*'"
 }
 function rows () {
     recsel -R $ROWS | sed '/^[[:space:]]*$/d'
