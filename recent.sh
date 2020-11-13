@@ -31,6 +31,8 @@ Print recent history
 EOF
 }
 
+HISTORYRECFILE="$HOME/.history.rec"
+
 RED="\033[31m"
 GREEN="\033[32m"
 CYAN="\033[36m"
@@ -58,8 +60,8 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 if [ $RENUMBER -eq 1 ]; then
-    sed -i '/^id: /d' $HOME/.history.rec \
-        && recfix --auto $HOME/.history.rec
+    sed -i '/^id: /d' $HISTORYRECFILE \
+        && recfix --auto $HISTORYRECFILE
     exit 0
 fi
 
@@ -83,7 +85,7 @@ function filter () {
 }
 function command_raw () {
     # Get the command raw of the id $YANK
-    cat $HOME/.history.rec | recsel -e "id=$YANK" | recsel -R 'command_raw'
+    cat $HISTORYRECFILE | recsel -e "id=$YANK" | recsel -R 'command_raw'
 }
 
 
@@ -96,17 +98,17 @@ fi
 
 
 if [ ! -z $TAG ]; then
-    recset -t history -e "id=$TAG" -f tag -s $TAGSYMBOL $HOME/.history.rec
+    recset -t history -e "id=$TAG" -f tag -s $TAGSYMBOL $HISTORYRECFILE
     exit 0
 fi
 
 if [ ! -z $UNTAG ]; then
-    recset -t history -e "id=$UNTAG" -f tag -s " " $HOME/.history.rec
+    recset -t history -e "id=$UNTAG" -f tag -s " " $HISTORYRECFILE
     exit 0
 fi
 
 
-OUT=$(cat $HOME/.history.rec)
+OUT=$(cat $HISTORYRECFILE)
 if [ $CWD -eq 1 ]; then
     OUT=$(echo $OUT | cwd)
 fi
