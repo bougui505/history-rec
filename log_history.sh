@@ -31,6 +31,7 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
     fi
     # Delete duplicates
     recdel -t history \
+           --force \
            -e $SEX \
             $HISTORYDB
     # Store data
