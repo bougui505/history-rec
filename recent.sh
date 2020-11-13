@@ -28,7 +28,8 @@ Print recent history
     -p, --pin display only tagged entries
     -d, --duration=INT display commands that ran for longer than duration given in seconds
     -r, --renumber renumber the ids of the database
-    --rsync=HOST rsync the history file from the given HOST
+    --rsync=HOST rsync the history recfile from the given HOST and exit
+    --host=HOST use the history recfile from the given HOST
 EOF
 }
 
@@ -55,20 +56,31 @@ while [[ "$#" -gt 0 ]]; do
         -d|--duration) DURATION="$2"; EXPRESSION="elapsed>='$(( $DURATION*1000 ))'"; shift ;;
         -r|--renumber) RENUMBER=1 ;;
         --rsync) RSYNC="$2"; shift ;;
+        --host) _HOST_="$2"; shift ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
     shift
 done
 
-if [ $RENUMBER -eq 1 ]; then
-    sed -i '/^id: /d' $HISTORYRECFILE \
-        && recfix --auto $HISTORYRECFILE
+if [[ ! -z $RSYNC ]]; then
+    rsync -a -zz --update --progress -h $RSYNC:.history.rec $HOME/.history-$RSYNC.rec
     exit 0
 fi
 
-if [[ ! -z $RSYNC ]]; then
-    rsync -a -zz --update --progress -h $RSYNC:.history.rec $HOME/.history-$RSYNC.rec
+if [[ ! -z $_HOST_ ]]; then
+    RSYNCFILE="$HOME/.history-$_HOST_.rec"
+    if [[ -f $RSYNCFILE ]]; then
+        HISTORYRECFILE=$RSYNCFILE
+    else
+        echo "$RED$RSYNCFILE not found. Please make sure to rsync the file first (see: --rsync option)"
+        exit 1
+    fi
+fi
+
+if [ $RENUMBER -eq 1 ]; then
+    sed -i '/^id: /d' $HISTORYRECFILE \
+        && recfix --auto $HISTORYRECFILE
     exit 0
 fi
 
