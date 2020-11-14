@@ -81,7 +81,7 @@ if [[ ! -z $_HOST_ ]]; then
 fi
 
 if [[ ! -z $FULL ]]; then
-    recsel -e "id=='$FULL'" $HISTORYRECFILE
+    recsel -e "id='$FULL'" $HISTORYRECFILE
     exit 0
 fi
 
