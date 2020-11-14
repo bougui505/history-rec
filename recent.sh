@@ -12,24 +12,25 @@ function usage () {
     cat << EOF
 Print recent history
     -h, --help print this help message and exit
-    -n, --number=NUM number of entries to print
-    -s, --search=STR string to search for command field
-    -w, --cwd=STR print only entries for the Current Working Directory
-    -e, --expression=RECORD_EXPR filter using the given expression
+    -n, --number NUM number of entries to print
+    -s, --search STR string to search for command field
+    -w, --cwd STR print only entries for the Current Working Directory
+    -e, --expression RECORD_EXPR filter using the given expression
         (See: https://www.gnu.org/software/recutils/manual/SEX-Operators.html#SEX-Operators).
         Current filters:
         - Before a given date:
             - "date<<'2020-11-04T22:53'"
         - After a given date:
             - "date>>'2020-11-04T22:53'"
-    -y, --yank=INT display and copy to clipboard the command entry with the given ID. (requires xclip)
-    -t, --tag=INT tag the given entry given by ID using this symbol: $TAGSYMBOL
-    -u, --untag=INT untag the given entry given by ID
+    -y, --yank INT display and copy to clipboard the command entry with the given ID. (requires xclip)
+    -t, --tag INT tag the given entry given by ID using this symbol: $TAGSYMBOL
+    -u, --untag INT untag the given entry given by ID
     -p, --pin display only tagged entries
-    -d, --duration=INT display commands that ran for longer than duration given in seconds
+    -d, --duration INT display commands that ran for longer than duration given in seconds
     -r, --renumber renumber the ids of the database
-    --rsync=HOST rsync the history recfile from the given HOST and exit
-    --host=HOST use the history recfile from the given HOST
+    -f, --full INT display the full entry given by id
+    --rsync HOST rsync the history recfile from the given HOST and exit
+    --host HOST use the history recfile from the given HOST
 EOF
 }
 
@@ -55,6 +56,7 @@ while [[ "$#" -gt 0 ]]; do
         -p|--pin) EXPRESSION="tag='$TAGSYMBOL'" ;;
         -d|--duration) DURATION="$2"; EXPRESSION="elapsed>='$(( $DURATION*1000 ))'"; shift ;;
         -r|--renumber) RENUMBER=1 ;;
+        -f|--full) FULL="$2"; shift ;;
         --rsync) RSYNC="$2"; shift ;;
         --host) _HOST_="$2"; shift ;;
         -h|--help) usage; exit 0 ;;
@@ -76,6 +78,11 @@ if [[ ! -z $_HOST_ ]]; then
         echo "$RED$RSYNCFILE not found. Please make sure to rsync the file first (see: --rsync option)"
         exit 1
     fi
+fi
+
+if [[ ! -z $FULL ]]; then
+    recsel -e "id=='$FULL'" $HISTORYRECFILE
+    exit 0
 fi
 
 if [ $RENUMBER -eq 1 ]; then
