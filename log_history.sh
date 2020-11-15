@@ -43,6 +43,7 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
            -f date -v $_DATE_ \
            -f tag -v $TAG \
            -f elapsed -v $_ELAPSED_ \
+           -f load_average -v "$(uptime | awk '{print $10,$11,$12}')" \
 	    $HISTORYDB
     # Clean carriage returns special characters
     sed -i 's/\\n/; /g' $HISTORYDB
