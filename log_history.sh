@@ -34,6 +34,7 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
            --force \
            -e $SEX \
             $HISTORYDB
+    LOAD_AVERAGE=$(uptime | awk '{print $10,$11,$12}')
     # Store data
     recins -t history \
            -f command -v $COMMANDFMT \
@@ -43,7 +44,9 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
            -f date -v $_DATE_ \
            -f tag -v $TAG \
            -f elapsed -v $_ELAPSED_ \
-           -f load_average -v "$(uptime | awk '{print $10,$11,$12}')" \
+           -f load_average -v "$(echo $LOAD_AVERAGE | awk -F', ' '{print $1}')" \
+           -f load_average -v "$(echo $LOAD_AVERAGE | awk -F', ' '{print $2}')" \
+           -f load_average -v "$(echo $LOAD_AVERAGE | awk -F', ' '{print $3}')" \
 	    $HISTORYDB
     # Clean carriage returns special characters
     sed -i 's/\\n/; /g' $HISTORYDB
