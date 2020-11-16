@@ -20,6 +20,7 @@ _RETURN_VAL_=$2
 _PWD_=$3
 _DATE_=$4
 _ELAPSED_=$5  # elapsed command time in ms
+_LOAD_=$6  # difference of load average
 
 if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is not empty
     COMMANDFMT=$(echo $_COMMAND_ | sed "s/'/\\\'/g")
@@ -47,6 +48,7 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
            -f load_average -v "$(echo $LOAD_AVERAGE | awk '{print $1}')" \
            -f load_average -v "$(echo $LOAD_AVERAGE | awk '{print $2}')" \
            -f load_average -v "$(echo $LOAD_AVERAGE | awk '{print $3}')" \
+           -f load -v "$_LOAD_" \
 	    $HISTORYDB
     # Clean carriage returns special characters
     sed -i 's/\\n/; /g' $HISTORYDB
