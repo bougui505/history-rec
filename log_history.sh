@@ -20,19 +20,17 @@ fi
 HISTORYDB=$HOME/.history.rec
 HISTORYLABELFILE="$HOME/.history_label"
 
-if [[ -f $HISTORYLABELFILE ]]; then
-    LABEL=$(cat $HISTORYLABELFILE)
-    echo "${RED}Current history label: $LABEL${NOCOLOR}"
-else
-    LABEL="default"
-fi
-
 _COMMAND_=$1
 _RETURN_VAL_=$2
 _PWD_=$3
 _DATE_=$4
 _ELAPSED_=$5  # elapsed command time in ms
 _LOAD_=$6  # difference of load average
+LABEL=$7
+
+if [[ -f $HISTORYLABELFILE ]]; then
+    echo "${RED}Current history label: $LABEL${NOCOLOR}"
+fi
 
 if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is not empty
     COMMANDFMT=$(echo $_COMMAND_ | sed "s/'/\\\'/g")
