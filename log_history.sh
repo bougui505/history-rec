@@ -7,6 +7,10 @@
 set -e  # exit on error
 set -o noclobber  # prevent overwritting redirection
 
+GREEN="\033[32m"
+RED="\033[31m"
+NOCOLOR="\033[0m"
+
 DIRSCRIPT="$(dirname "$(readlink -f "$0")")"
 TAGSYMBOL="⬤"
 if [ ! -f $HOME/.history.rec ]; then
@@ -14,6 +18,14 @@ if [ ! -f $HOME/.history.rec ]; then
 fi
 
 HISTORYDB=$HOME/.history.rec
+HISTORYLABELFILE="$HOME/.history_label"
+
+if [[ -f $HISTORYLABELFILE ]]; then
+    LABEL=$(cat $HISTORYLABELFILE)
+    echo "${RED}Current history label: $LABEL${NOCOLOR}"
+else
+    LABEL="default"
+fi
 
 _COMMAND_=$1
 _RETURN_VAL_=$2
@@ -24,7 +36,7 @@ _LOAD_=$6  # difference of load average
 
 if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is not empty
     COMMANDFMT=$(echo $_COMMAND_ | sed "s/'/\\\'/g")
-    SEX="command = '$COMMANDFMT' && pwd = '$PWD'"
+    SEX="command = '$COMMANDFMT' && pwd = '$PWD' && label = '$LABEL'"
     # Check if command is tagged
     TAG=$(recsel -t history -e $SEX $HISTORYDB | recsel -R "tag")
     if [[ -z $TAG && TAG != $TAGSYMBOL ]]; then
@@ -49,6 +61,7 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
            -f load_average -v "$(echo $LOAD_AVERAGE | awk '{print $2}')" \
            -f load_average -v "$(echo $LOAD_AVERAGE | awk '{print $3}')" \
            -f load -v "$_LOAD_" \
+           -f label -v "$LABEL" \
 	    $HISTORYDB
     # Clean carriage returns special characters
     sed -i 's/\\n/; /g' $HISTORYDB

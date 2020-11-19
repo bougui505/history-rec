@@ -29,12 +29,16 @@ Print recent history
     -d, --duration INT display commands that ran for longer than duration given in seconds
     -r, --renumber renumber the ids of the database
     -f, --full INT display the full entry given by id
+    -l, --label STR label all the commands stored from now to the history with the given label
+    -ul, --unlabel disable the current labelling
+    -ll, --list-labels list all the labels stored in the history file
     --rsync HOST rsync the history recfile from the given HOST and exit
     --host HOST use the history recfile from the given HOST
 EOF
 }
 
 HISTORYRECFILE="$HOME/.history.rec"
+HISTORYLABELFILE="$HOME/.history_label"
 
 RED="\033[31m"
 GREEN="\033[32m"
@@ -44,6 +48,8 @@ NOCOLOR="\033[0m"
 N=20
 CWD=0
 RENUMBER=0
+UNLABEL=0
+LISTLABELS=0
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -n|--number) N="$2"; shift ;;
@@ -57,6 +63,9 @@ while [[ "$#" -gt 0 ]]; do
         -d|--duration) DURATION="$2"; EXPRESSION="elapsed>='$(( $DURATION*1000 ))'"; shift ;;
         -r|--renumber) RENUMBER=1 ;;
         -f|--full) FULL="$2"; shift ;;
+        -l|--label) LABEL="$2"; shift ;;
+        -ul|--unlabel) UNLABEL=1 ;;
+        -ll|--list-labels) LISTLABELS=1 ;;
         --rsync) RSYNC="$2"; shift ;;
         --host) _HOST_="$2"; shift ;;
         -h|--help) usage; exit 0 ;;
@@ -78,6 +87,27 @@ if [[ ! -z $_HOST_ ]]; then
         echo "$RED$RSYNCFILE not found. Please make sure to rsync the file first (see: --rsync option)"
         exit 1
     fi
+fi
+
+if [[ ! -z $LABEL ]]; then
+    if [[ -f $HISTORYLABELFILE ]]; then
+        CURRENTLABEL=$(cat $HISTORYLABELFILE)
+        echo "${RED}Cannot create new label $LABEL as $CURRENTLABEL already active${NOCOLOR}"
+        exit 1
+    else
+        echo $LABEL > $HISTORYLABELFILE
+        exit 0
+    fi
+fi
+
+if [[ $UNLABEL -eq 1 ]]; then
+    rm $HISTORYLABELFILE
+    exit 0
+fi
+
+if [[ $LISTLABELS -eq 1 ]]; then
+    recsel -C -P label $HISTORYRECFILE | sort -u
+    exit 0
 fi
 
 if [[ ! -z $FULL ]]; then
