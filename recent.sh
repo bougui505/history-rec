@@ -32,6 +32,7 @@ Print recent history
     -l, --label STR label all the commands stored from now to the history with the given label
     -ul, --unlabel disable the current labelling
     -ll, --list-labels list all the labels stored in the history file
+    -pl, --pin-label list only entries of the current active label
     --rsync HOST rsync the history recfile from the given HOST and exit
     --host HOST use the history recfile from the given HOST
 EOF
@@ -39,6 +40,12 @@ EOF
 
 HISTORYRECFILE="$HOME/.history.rec"
 HISTORYLABELFILE="$HOME/.history_label"
+
+if [[ -f $HISTORYLABELFILE ]]; then
+    LOADEDLABEL=$(cat $HISTORYLABELFILE)
+else
+    LOADEDLABEL="default"
+fi
 
 RED="\033[31m"
 GREEN="\033[32m"
@@ -66,6 +73,7 @@ while [[ "$#" -gt 0 ]]; do
         -l|--label) LABEL="$2"; shift ;;
         -ul|--unlabel) UNLABEL=1 ;;
         -ll|--list-labels) LISTLABELS=1 ;;
+        -pl|--pin-label) EXPRESSION="label='$LOADEDLABEL'" ;;
         --rsync) RSYNC="$2"; shift ;;
         --host) _HOST_="$2"; shift ;;
         -h|--help) usage; exit 0 ;;
