@@ -28,10 +28,6 @@ _ELAPSED_=$5  # elapsed command time in ms
 _LOAD_=$6  # difference of load average
 LABEL=$7
 
-if [[ -f $HISTORYLABELFILE ]]; then
-    echo "${RED}Current history label: $LABEL${NOCOLOR}"
-fi
-
 if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is not empty
     COMMANDFMT=$(echo $_COMMAND_ | sed "s/'/\\\'/g")
     SEX="command = '$COMMANDFMT' && pwd = '$PWD' && label = '$LABEL'"

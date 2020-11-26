@@ -11,11 +11,14 @@ function preexec() {
 
 function precmd() {
   exit_status=$?
+  if [[ -f $HISTORYLABELFILE ]]; then
+      LABEL=$(cat $HISTORYLABELFILE)
+  fi
   hr -
   if [ $timer ]; then
     now=$(($(date +%s%0N)/1000000))
     elapsed=$(($now-$timer))
-    export RPROMPT="%F{cyan}${elapsed}ms %{$reset_color%}"
+    export RPROMPT="%F{red}$LABEL %{$reset_color%}%F{cyan}${elapsed}ms %{$reset_color%}"
     unset timer
   fi
   load_average_1=$(awk '{print $1}' /proc/loadavg)
