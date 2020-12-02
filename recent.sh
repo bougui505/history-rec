@@ -24,6 +24,7 @@ Print recent history
             - "date>>'2020-11-04T22:53'"
     -y, --yank INT display and copy to clipboard the command entry with the given ID. (requires xclip)
     -t, --tag INT tag the given entry given by ID using this symbol: $TAGSYMBOL
+    -c, --comment INT open vim editor to comment the entry given by ID
     -u, --untag INT untag the given entry given by ID
     -p, --pin display only tagged entries
     -d, --duration INT display commands that ran for longer than duration given in seconds
@@ -65,6 +66,7 @@ while [[ "$#" -gt 0 ]]; do
         -e|--expression) EXPRESSION="$2"; shift ;;
         -y|--yank) YANK="$2"; shift ;;
         -t|--tag) TAG="$2"; shift ;;
+        -c|--comment) COMMENT="$2"; shift ;;
         -u|--untag) UNTAG="$2"; shift ;;
         -p|--pin) EXPRESSION="tag='$TAGSYMBOL'" ;;
         -d|--duration) DURATION="$2"; EXPRESSION="elapsed>='$(( $DURATION*1000 ))'"; shift ;;
@@ -168,6 +170,20 @@ fi
 
 if [ ! -z $UNTAG ]; then
     recset -t history -e "id=$UNTAG" -f tag -s " " $HISTORYRECFILE
+    exit 0
+fi
+
+
+if [ ! -z $COMMENT ]; then
+    COMMENTTMPFILE="/dev/shm/history_comment"
+    recsel -e "id=$COMMENT" -P "comment" $HISTORYRECFILE > $COMMENTTMPFILE
+    vim $COMMENTTMPFILE
+    INPUTCOMMENT=$(cat $COMMENTTMPFILE)
+    if [[ -z $INPUTCOMMENT ]]; then
+        INPUTCOMMENT=" "
+    fi
+    recset -t history -e "id=$COMMENT" -f comment -s $INPUTCOMMENT $HISTORYRECFILE
+    rm $COMMENTTMPFILE
     exit 0
 fi
 

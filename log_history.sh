@@ -36,6 +36,11 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
     if [[ -z $TAG && TAG != $TAGSYMBOL ]]; then
         TAG=" "
     fi
+    # Check if command is commented
+    COMMENT=$(recsel -t history -e $SEX $HISTORYDB | recsel -R "comment")
+    if [[ -z $COMMENT ]]; then
+        COMMENT=" "
+    fi
     # Delete duplicates
     recdel -t history \
            --force \
@@ -50,6 +55,7 @@ if [[ ! -z $_COMMAND_ && ! -z $_ELAPSED_ ]]; then  # Check that $_COMMAND_ is no
            -f pwd -v $_PWD_ \
            -f date -v $_DATE_ \
            -f tag -v $TAG \
+           -f comment -v $COMMENT \
            -f elapsed -v $_ELAPSED_ \
            -f load_average -v "$(echo $LOAD_AVERAGE | awk '{print $1}')" \
            -f load_average -v "$(echo $LOAD_AVERAGE | awk '{print $2}')" \
