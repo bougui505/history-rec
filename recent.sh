@@ -182,7 +182,7 @@ if [ ! -z $COMMENT ]; then
     if [[ -z $INPUTCOMMENT ]]; then
         INPUTCOMMENT=" "
     fi
-    recset -t history -e "id=$COMMENT" -f comment -s $INPUTCOMMENT $HISTORYRECFILE
+    recset -t history -e "id=$COMMENT" -f comment -S $INPUTCOMMENT $HISTORYRECFILE
     rm $COMMENTTMPFILE
     exit 0
 fi
