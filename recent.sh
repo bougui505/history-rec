@@ -207,7 +207,7 @@ function format_out() {
     COLOR2=$2
     COLOR3=$3
     NOCOLOR_=$4
-    echo "id             date        exit code  ${COLOR3}duration${NOCOLOR_} $TAGSYMBOL   command"
+    echo "id             date        exit code  ${COLOR3}duration${NOCOLOR_}   command"
     _elapsed_formatted=$(echo $_elapsed_ | awk -v cyan=$COLOR3 -v nocolor=$NOCOLOR_ '{x=$1/1000; s=x%60; x/=60; m=x%60; x/=60; h=x%60;
                                                                           if (int(h)>0 && int(m)>0){printf(cyan" %02d:%02d:%02d.%03d"nocolor"\n", h, m, s, $1%1000)}
                                                                           else if (int(m)>0){printf(cyan"    %02d:%02d.%03d"nocolor"\n", m, s, $1%1000)}
@@ -215,7 +215,7 @@ function format_out() {
                                                                           }')
     STARTROW=2
     paste -d"\t" <(echo $_pwd_) <(echo $_id_) <(echo $_date_) <(echo $_return_val_) \
-                <(echo $_elapsed_formatted) <(echo $_tag_) <(echo $_command_raw_) \
+                <(echo $_elapsed_formatted) <(echo $_command_raw_) \
                 | sed '/^\t/d' | tail -n$N \
                 | awk -F"\t" -v startrow=$STARTROW -v red=$COLOR1 -v green=$COLOR2 -v nocolor=$NOCOLOR_ -v pwd=$PWD\
                 '{
