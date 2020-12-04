@@ -24,5 +24,5 @@ function precmd() {
   load_average_1=$(awk '{print $1}' /proc/loadavg)
   delta_load=$(( load_average_1-load_average_0 ))
   # Parenthesis required to avoid Done message of background process
-  (log_history "$(fc -ln 0 | tail -1)" $exit_status $PWD $(date -Is) $elapsed $delta_load $LABEL &)
+  tsp -n log_history "$(fc -ln 0 | tail -1)" $exit_status $PWD $(date -Is) $elapsed $delta_load $LABEL
 }
