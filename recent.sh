@@ -23,7 +23,7 @@ Print recent history
         - After a given date:
             - "date>>'2020-11-04T22:53'"
     -y, --yank INT display and copy to clipboard the command entry with the given ID. (requires xclip)
-    -t, --tag INT tag the given entry given by ID using this symbol: $TAGSYMBOL
+    -t, --tag INT tag the given entry given by ID. Use -p to display only tagged entries
     -c, --comment INT open vim editor to comment the entry given by ID
     -u, --untag INT untag the given entry given by ID
     -p, --pin display only tagged entries
