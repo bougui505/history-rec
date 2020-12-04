@@ -25,4 +25,5 @@ function precmd() {
   delta_load=$(( load_average_1-load_average_0 ))
   # Parenthesis required to avoid Done message of background process
   tsp -n log_history "$(fc -ln 0 | tail -1)" $exit_status $PWD $(date -Is) $elapsed $delta_load $LABEL
+  clean_log_history_queue
 }
