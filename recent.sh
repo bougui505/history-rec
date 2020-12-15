@@ -36,6 +36,7 @@ Print recent history
     -pl, --pin-label list only entries of the current active label
     --rsync HOST rsync the history recfile from the given HOST and exit
     --host HOST use the history recfile from the given HOST
+    --raw output raw recfile format
 EOF
 }
 
@@ -58,6 +59,7 @@ CWD=0
 RENUMBER=0
 UNLABEL=0
 LISTLABELS=0
+RAW=0
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -n|--number) N="$2"; shift ;;
@@ -78,6 +80,7 @@ while [[ "$#" -gt 0 ]]; do
         -pl|--pin-label) EXPRESSION="label='$LOADEDLABEL'" ;;
         --rsync) RSYNC="$2"; shift ;;
         --host) _HOST_="$2"; shift ;;
+        --raw) RAW=1 ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
@@ -224,6 +227,11 @@ function format_out() {
                     else{for(i=startrow;i<=NF;++i){printf("%s ", $i)}printf("\n")}
                 }'
 }
+if [[ $RAW -eq 1 ]]; then
+    echo $OUT
+    exit 0
+fi
+
 if [ -t 1 ]; then  # Script stdout is not piped -> colored output
     format_out $RED $GREEN $CYAN $NOCOLOR
 else  # Script stdout is piped -> no colors
