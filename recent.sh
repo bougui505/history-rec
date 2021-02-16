@@ -37,6 +37,7 @@ Print recent history
     --rsync HOST rsync the history recfile from the given HOST and exit
     --host HOST use the history recfile from the given HOST
     --raw output raw recfile format
+    --file FILE find the potential commands that generate or modify the given FILE by searching commands that ran around the modification time of the file
 EOF
 }
 
@@ -81,6 +82,7 @@ while [[ "$#" -gt 0 ]]; do
         --rsync) RSYNC="$2"; shift ;;
         --host) _HOST_="$2"; shift ;;
         --raw) RAW=1 ;;
+        --file) FILE="$2"; shift ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
@@ -156,7 +158,20 @@ function command_raw () {
     # Get the command raw of the id $YANK
     cat $HISTORYRECFILE | recsel -e "id=$YANK" | recsel -R 'command_raw'
 }
+function filter_file_modif () {
+    # Try to find a command that modify the given file by searching history by time
+    INFILE=$1
+    MODIFTIME=$(stat $INFILE | grep '^Modify' | recsel -P 'Modify')
+    DATELOW=$(date -d "$MODIFTIME" +%Y-%m-%dT%H:%M)
+    DATEUP=$(date -d "$MODIFTIME + 1 minute" +%Y-%m-%dT%H:%M)
+    EXPRESSION="date>>'$DATELOW' && date<<'$DATEUP' && return_val=0"
+    echo $EXPRESSION
+}
 
+if [ ! -z $FILE ]; then
+    EXPRESSION=$(filter_file_modif $FILE)
+    CWD=1
+fi
 
 if [ ! -z $YANK ]; then
     OUTCMD=$(command_raw)
