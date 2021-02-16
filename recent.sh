@@ -39,6 +39,7 @@ Print recent history
     --raw output raw recfile format
     --modif FILE find the potential commands that modify the given FILE by searching commands that ran around the modification time of the file
     --access FILE find the potential commands that access the given FILE by searching commands that ran around the access time of the file
+    -wt MINUTES window time in minutes for --modif and --access (default 2 minutes)
 EOF
 }
 
@@ -85,11 +86,16 @@ while [[ "$#" -gt 0 ]]; do
         --raw) RAW=1 ;;
         --modif) MODIF="$2"; shift ;;
         --access) ACCESS="$2"; shift ;;
+        -wt) WINDOWTIME="$2"; shift ;;
         -h|--help) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
     shift
 done
+
+if [[ -z $WINDOWTIME ]]; then
+    WINDOWTIME=2
+fi
 
 if [[ ! -z $RSYNC ]]; then
     rsync -a -zz --update --progress -h $RSYNC:.history.rec $HOME/.history-$RSYNC.rec
@@ -166,7 +172,7 @@ function filter_file_modif () {
     STATUS=$2  # Modify or Access
     MODIFTIME=$(stat $INFILE | tail -n 4 | grep "^$STATUS" | recsel -P "$STATUS")
     DATELOW=$(date -d "$MODIFTIME" +%Y-%m-%dT%H:%M)
-    DATEUP=$(date -d "$MODIFTIME + 2 minute" +%Y-%m-%dT%H:%M)
+    DATEUP=$(date -d "$MODIFTIME + $WINDOWTIME minute" +%Y-%m-%dT%H:%M)
     EXPRESSION="date>>'$DATELOW' && date<<'$DATEUP' && return_val=0"
     echo $EXPRESSION
 }
