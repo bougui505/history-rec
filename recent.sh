@@ -171,7 +171,7 @@ function filter_file_modif () {
     INFILE=$1
     STATUS=$2  # Modify or Access
     MODIFTIME=$(stat $INFILE | tail -n 4 | grep "^$STATUS" | recsel -P "$STATUS")
-    DATELOW=$(date -d "$MODIFTIME" +%Y-%m-%dT%H:%M)
+    DATELOW=$(date -d "$MODIFTIME - 1 minute" +%Y-%m-%dT%H:%M)
     DATEUP=$(date -d "$MODIFTIME + $WINDOWTIME minute" +%Y-%m-%dT%H:%M)
     EXPRESSION="date>>'$DATELOW' && date<<'$DATEUP' && return_val=0"
     echo $EXPRESSION
