@@ -16,7 +16,7 @@ function precmd() {
   if [[ -f $HISTORYLABELFILE ]]; then
       LABEL=$(cat $HISTORYLABELFILE)
   fi
-  hr -
+  # hr -  # for an horizontal ruler at the end of the command output display
   if [ $timer ]; then
     now=$(($(date +%s%0N)/1000000))
     elapsed=$(($now-$timer))
