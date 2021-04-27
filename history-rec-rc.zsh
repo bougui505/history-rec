@@ -12,6 +12,7 @@ function preexec() {
 }
 
 function precmd() {
+  resize > /dev/null  # To resize the layout of the terminal
   exit_status=$?
   if [[ -f $HISTORYLABELFILE ]]; then
       LABEL=$(cat $HISTORYLABELFILE)
