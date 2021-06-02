@@ -245,5 +245,12 @@ OUT=$(echo $OUT | quicksearch)
 echo $OUT \
     | recsel -p 'id,date,return_val,elapsed,tag,command_raw' \
     | rec2csv | sed 's/^"//' | sed 's/"$//' \
-    | awk -F'","' 'function format_duration(ms){T=ms/1000;D=int(T/60/60/24);H=int(T/60/60%24);M=int(T/60%60);S=T%60; return D"d:"H"h:"M"m:"S"s"} {print $1"\t"$2"\t"$3"\t"format_duration($4)"\t"$5"\t"$6}' \
+    | awk -F'","' '
+function format_duration(ms){
+    T=ms/1000;D=int(T/60/60/24)
+    H=int(T/60/60%24)
+    M=int(T/60%60)
+    S=T%60
+    return D"d:"H"h:"M"m:"S"s"}
+    {printf "%s\t%s\t%s\t%-16s\t%s\t%s\n", $1,$2,$3,format_duration($4),$5,$6}' \
     | sort -g -k1 | tail -n $N
