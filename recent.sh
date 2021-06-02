@@ -44,6 +44,7 @@ EOF
 }
 
 HISTORYRECFILE="$HOME/history.rec"
+HISTORYDIRRECFILE=".history.dir.rec"
 HISTORYPATHS="$HOME/historypaths.list"
 HISTORYLABELFILE="$HOME/.history_label"
 
@@ -208,12 +209,12 @@ fi
 
 
 if [ ! -z $TAG ]; then
-    recset -t history -e "id=$TAG" -f tag -s $TAGSYMBOL $HISTORYRECFILE
+    recset -e "id=$TAG" -f tag -s $TAGSYMBOL $HISTORYDIRRECFILE
     exit 0
 fi
 
 if [ ! -z $UNTAG ]; then
-    recset -t history -e "id=$UNTAG" -f tag -s " " $HISTORYRECFILE
+    recset -e "id=$UNTAG" -f tag -s " " $HISTORYDIRRECFILE
     exit 0
 fi
 
@@ -242,7 +243,7 @@ fi
 OUT=$(echo $OUT | quicksearch)
 
 echo $OUT \
-    | recsel -p 'id,date,return_val,elapsed,command_raw' \
+    | recsel -p 'id,date,return_val,elapsed,tag,command_raw' \
     | rec2csv | sed 's/^"//' | sed 's/"$//' \
-    | awk -F'","' 'function format_duration(ms){T=ms/1000;D=int(T/60/60/24);H=int(T/60/60%24);M=int(T/60%60);S=T%60; return D"d:"H"h:"M"m:"S"s"} {print $1"\t"$2"\t"$3"\t"format_duration($4)"\t"$5}' \
+    | awk -F'","' 'function format_duration(ms){T=ms/1000;D=int(T/60/60/24);H=int(T/60/60%24);M=int(T/60%60);S=T%60; return D"d:"H"h:"M"m:"S"s"} {print $1"\t"$2"\t"$3"\t"format_duration($4)"\t"$5"\t"$6}' \
     | sort -g -k1 | tail -n $N
