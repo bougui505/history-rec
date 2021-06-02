@@ -47,6 +47,12 @@ HISTORYRECFILE="$HOME/history.rec"
 HISTORYPATHS="$HOME/historypaths.list"
 HISTORYLABELFILE="$HOME/.history_label"
 
+TORM=""
+for RFILE in $(cat $HISTORYPATHS); do
+    (test -f $RFILE) || TORM="$TORM\n$RFILE"
+done
+grep -Fx -v -f =(echo $TORM) $HISTORYPATHS | sponge $HISTORYPATHS
+
 (test -f $HISTORYRECFILE) && rm $HISTORYRECFILE
 awk '{if (FNR==1&&NR>1){print ""}; {print $0}}' $(cat $HISTORYPATHS) > $HISTORYRECFILE
 
