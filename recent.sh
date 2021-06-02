@@ -43,8 +43,14 @@ Print recent history
 EOF
 }
 
-HISTORYRECFILE="$HOME/.history.rec"
+HISTORYRECFILE="$HOME/history.rec"
+HISTORYPATHS="$HOME/historypaths.list"
 HISTORYLABELFILE="$HOME/.history_label"
+
+(test -f $HISTORYRECFILE) && rm $HISTORYRECFILE
+awk '{if (FNR==1&&NR>1){print ""}; {print $0}}' $(cat $HISTORYPATHS) > $HISTORYRECFILE
+
+
 
 if [[ -f $HISTORYLABELFILE ]]; then
     LOADEDLABEL=$(cat $HISTORYLABELFILE)
@@ -229,40 +235,8 @@ if [ ! -z $EXPRESSION ]; then
 fi
 OUT=$(echo $OUT | quicksearch)
 
-
-for ROW in $(echo $ROWS | tr ',' '\n'); do
-    ROWVALS=$(echo $OUT | recsel -P $ROW)
-    declare "_${ROW}_=$ROWVALS"
-done
-function format_out() {
-    COLOR1=$1
-    COLOR2=$2
-    COLOR3=$3
-    NOCOLOR_=$4
-    echo "id             date        exit code  ${COLOR3}duration${NOCOLOR_}   command"
-    _elapsed_formatted=$(echo $_elapsed_ | awk -v cyan=$COLOR3 -v nocolor=$NOCOLOR_ '{x=$1/1000; s=x%60; x/=60; m=x%60; x/=60; h=x%60;
-                                                                          if (int(h)>0 && int(m)>0){printf(cyan" %02d:%02d:%02d.%03d"nocolor"\n", h, m, s, $1%1000)}
-                                                                          else if (int(m)>0){printf(cyan"    %02d:%02d.%03d"nocolor"\n", m, s, $1%1000)}
-                                                                          else {printf(cyan"       %02d.%03d"nocolor"\n", s, $1%1000)}
-                                                                          }')
-    STARTROW=2
-    paste -d"\t" <(echo $_pwd_) <(echo $_id_) <(echo $_date_) <(echo $_return_val_) \
-                <(echo $_elapsed_formatted) <(echo $_command_raw_) \
-                | sed '/^\t/d' | tail -n$N \
-                | awk -F"\t" -v startrow=$STARTROW -v red=$COLOR1 -v green=$COLOR2 -v nocolor=$NOCOLOR_ -v pwd=$PWD\
-                '{
-                    if ($4>0){for(i=startrow;i<=NF;++i){printf("%s%s%s ",red, $i, nocolor)}printf("\n")}
-                    else if ($1==pwd){for(i=startrow;i<=NF;++i){printf("%s%s%s ", green, $i, nocolor)}printf("\n")}
-                    else{for(i=startrow;i<=NF;++i){printf("%s ", $i)}printf("\n")}
-                }'
-}
-if [[ $RAW -eq 1 ]]; then
-    echo $OUT
-    exit 0
-fi
-
-if [ -t 1 ]; then  # Script stdout is not piped -> colored output
-    format_out $RED $GREEN $CYAN $NOCOLOR
-else  # Script stdout is piped -> no colors
-    format_out '' '' '' ''
-fi
+echo $OUT \
+    | recsel -p 'id,date,return_val,elapsed,command_raw' \
+    | rec2csv | sed 's/^"//' | sed 's/"$//' \
+    | awk -F'","' 'function format_duration(ms){T=ms/1000;D=int(T/60/60/24);H=int(T/60/60%24);M=int(T/60%60);S=T%60; return D"d:"H"h:"M"m:"S"s"} {print $1"\t"$2"\t"$3"\t"format_duration($4)"\t"$5}' \
+    | sort -g -k1 | tail -n $N
