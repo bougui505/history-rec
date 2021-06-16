@@ -245,6 +245,7 @@ OUT=$(echo $OUT | quicksearch)
 echo $OUT \
     | recsel -p 'id,date,return_val,elapsed,tag,command_raw' \
     | rec2csv | sed 's/^"//' | sed 's/"$//' \
+    | sed 's/""/"/g' \
     | awk -F'","' '
 function format_duration(ms){
     T=ms/1000;D=int(T/60/60/24)
