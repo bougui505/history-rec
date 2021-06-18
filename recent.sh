@@ -233,10 +233,12 @@ if [ ! -z $COMMENT ]; then
 fi
 
 
-OUT=$(cat $HISTORYRECFILE)
 if [ $CWD -eq 1 ]; then
-    OUT=$(echo $OUT | cwd)
+    HISTORYRECFILE='.history.dir.rec'
 fi
+
+OUT=$(cat $HISTORYRECFILE)
+
 if [ ! -z $EXPRESSION ]; then
     OUT=$(echo $OUT | filter)
 fi
