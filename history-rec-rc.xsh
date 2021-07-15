@@ -7,10 +7,13 @@ def helloworld():
     See: https://xon.sh/events.html
     See: https://xon.sh/tutorial_events.html
     """
-    lasthistory = __xonsh__.history[-1]
-    cmd = lasthistory.cmd.strip()
-    exitstatus = lasthistory.rtn
-    elapsed = (lasthistory.ts[1] - lasthistory.ts[0]) * 1000
-    timestamp = $(date -Is)
-    $TS_SOCKET = "/tmp/history"
-    tsp log_history @(cmd.strip()) @(exitstatus) $PWD @(timestamp.strip()) @(elapsed) 0 default > /dev/null
+    try:
+        lasthistory = __xonsh__.history[-1]
+        cmd = lasthistory.cmd.strip()
+        exitstatus = lasthistory.rtn
+        elapsed = (lasthistory.ts[1] - lasthistory.ts[0]) * 1000
+        timestamp = $(date -Is)
+        $TS_SOCKET = "/tmp/history"
+        tsp log_history @(cmd.strip()) @(exitstatus) $PWD @(timestamp.strip()) @(elapsed) 0 default > /dev/null
+    except IndexError:
+        pass
