@@ -12,4 +12,5 @@ def helloworld():
     exitstatus = lasthistory.rtn
     elapsed = (lasthistory.ts[1] - lasthistory.ts[0]) * 1000
     timestamp = $(date -Is)
-    log_history @(cmd.strip()) @(exitstatus) $PWD @(timestamp.strip()) @(elapsed) 0 default
+    $TS_SOCKET = "/tmp/history"
+    tsp log_history @(cmd.strip()) @(exitstatus) $PWD @(timestamp.strip()) @(elapsed) 0 default > /dev/null
